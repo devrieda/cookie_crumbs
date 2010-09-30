@@ -22,16 +22,16 @@ module ActionController
     end
 
     protected 
-      # Returns the cookie crumb container
-      def crumbs
-        @crumb_jar ||= CrumbJar.new(self)
-      end
+
+    # Returns the cookie crumb container
+    def crumbs
+      @crumb_jar ||= CrumbJar.new(self)
+    end
   end
 
   class CrumbJar < Hash #:nodoc:
     def initialize(controller)
-      @controller = controller
-      @cookies, @crumbs = controller.request.cookies, {}
+      @controller, @cookies, @crumbs = controller, controller.request.cookies, {}
       super
       update(@cookies)
     end
@@ -39,8 +39,8 @@ module ActionController
     # Returns the value of the crumb collection (cookie) by +name+ -- or empty hash if no such collection exists. 
     def [](name)
       unless @crumbs[name.to_s]
-        if @cookies[name.to_s] && @cookies[name.to_s].respond_to?(:value)
-          value = @cookies[name.to_s].value.first
+        if @cookies[name.to_s] && @cookies[name.to_s]
+          value = @cookies[name.to_s]
         end
         @crumbs[name.to_s] = Crumb.new(name.to_s, self, value || "")
       end
@@ -52,23 +52,12 @@ module ActionController
       if value.is_a?(Hash)
         value = value.collect {|key, val| "#{key}=#{val.gsub('=', '^^')}" }.join('|')
       end
-      set_cookie("name" => name.to_s, "value" => value)
+      options = { :value => value }
+
+      options[:path] = "/" unless options.has_key?(:path)
+      super(name.to_s, options[:value])
+      @controller.response.set_cookie(name, options)
     end
-
-    private
-      def set_cookie(options) #:nodoc:
-        options["path"] = "/" unless options["path"]
-        cookie = CGI::Cookie.new(options)
-        @controller.logger.info "Cookie set: #{cookie}" unless @controller.logger.nil?
-
-        pos = false
-        @controller.response.headers["cookie"].each_with_index do |c, i|
-          pos = i if c.name == options["name"]
-        end
-
-        @controller.response.headers["cookie"][pos] = cookie if pos
-        @controller.response.headers["cookie"] << cookie unless pos
-      end
   end
 
   class Crumb < Hash #:nodoc:
@@ -102,8 +91,9 @@ module ActionController
     end
 
     private
-      def set_cookie #:nodoc:
-        @cookie[@name] = @crumbs
-      end
+    
+    def set_cookie #:nodoc:
+      @cookie[@name] = @crumbs
+    end
   end
 end

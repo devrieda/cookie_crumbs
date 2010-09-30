@@ -104,7 +104,7 @@ class CookieCrumbsTest < Test::Unit::TestCase
 
     assert_equal({"derek" => nil}, @controller.testvar1)
   end
-  
+
   def test_get_single_cookie_by_symbol
     self.request_cookies = {:user => "derek"}
     @request.action = "get_single_cookie_by_symbol"
@@ -112,7 +112,7 @@ class CookieCrumbsTest < Test::Unit::TestCase
 
     assert_equal({"derek" => nil}, @controller.testvar1)
   end
-  
+
   def test_get_single_cookie_with_crumbs
     self.request_cookies = {:user => "username=derek|password=test"}
     @request.action = "get_single_cookie"
@@ -127,7 +127,7 @@ class CookieCrumbsTest < Test::Unit::TestCase
 
     assert_equal({}, @controller.testvar1)
   end
-  
+
   def test_get_multiple_cookies
     self.request_cookies = {:user => "derek", :comment => "hey there"}
     @request.action = "get_multiple_cookies"
@@ -184,7 +184,7 @@ class CookieCrumbsTest < Test::Unit::TestCase
     self.request_cookies = {:user => "username=derek|password=test"}
 
     @request.action = "delete_crumb"
-    assert_equal [ CGI::Cookie::new("name" => "user", "value" => "password=test") ], process_request.headers["cookie"]
+    assert_equal({"user" => "password=test"}, process_request.cookies)
   end
 
 
@@ -192,54 +192,56 @@ class CookieCrumbsTest < Test::Unit::TestCase
 
   def test_set_single_cookie
     @request.action = "set_single_cookie"
-    assert_equal [ CGI::Cookie::new("name" => "user", "value" => "derek") ], process_request.headers["cookie"]
+
+    assert_equal({"user" => "derek"}, process_request.cookies)
   end
 
   def test_set_single_cookie_with_symbol
     @request.action = "set_single_cookie_with_symbol"
-    assert_equal [ CGI::Cookie::new("name" => "user", "value" => "derek") ], process_request.headers["cookie"]
+    assert_equal({"user" => "derek"}, process_request.cookies)
   end
 
   def test_set_single_cookie_with_hash
     @request.action = "set_single_cookie_with_hash"
-    assert_equal [ CGI::Cookie::new("name" => "user", "value" => "username=derek|password=test") ], process_request.headers["cookie"]
+    assert_equal({"user" => "password=test|username=derek"}, process_request.cookies)
   end
 
   def test_set_multiple_cookies
     @request.action = "set_multiple_cookies"
-    assert_equal 2, process_request.headers["cookie"].size
+    assert_equal 2, process_request.cookies.size
   end
-  
 
   def test_set_single_crumb
     @request.action = "set_single_crumb"
-    assert_equal [ CGI::Cookie::new("name" => "user", "value" => "username=derek") ], process_request.headers["cookie"]
+    assert_equal({ "user" => "username=derek" }, process_request.cookies)
   end
 
   def test_set_single_crumb_with_symbols
     @request.action = "set_single_crumb_with_symbols"
-    assert_equal [ CGI::Cookie::new("name" => "user", "value" => "username=derek") ], process_request.headers["cookie"]
+    assert_equal({"user" => "username=derek"}, process_request.cookies)
   end
-  
+
   def test_set_multiple_crumbs
     @request.action = "set_multiple_crumbs"
-    assert_equal [ CGI::Cookie::new("name" => "user", "value" => "username=derek|password=test") ], process_request.headers["cookie"]
+    assert_equal({"user" => "username=derek|password=test"}, process_request.cookies)
   end
 
   def test_set_multiple_crumbs_with_equals
     @request.action = "set_multiple_crumbs_with_equals"
-    assert_equal [ CGI::Cookie::new("name" => "user", "value" => "username=beer^^good|password=test") ], process_request.headers["cookie"]
+    assert_equal({"user" => "username=beer^^good|password=test"}, process_request.cookies)
   end
 
-  private
-    def request_cookies=(params)
-      params.each do |key, value| 
-        @request.cookies[key.to_s] = CGI::Cookie.new(key.to_s, value.to_s)
-      end
-    end
 
-    def process_request
-      @controller = TestController.new
-      @controller.process(@request, @response)
+  private
+
+  def request_cookies=(params)
+    params.each do |key, value| 
+      @request.cookies[key.to_s] = value.to_s
     end
+  end
+  
+  def process_request
+    @controller = TestController.new
+    @controller.process(@request, @response)
+  end
 end
