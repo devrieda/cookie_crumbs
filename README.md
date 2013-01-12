@@ -1,20 +1,23 @@
-CookieCrumbs
+# CookieCrumbs
     by Derek DeVries
     http://www.derekdevries.com
 
-== DESCRIPTION:
+## DESCRIPTION:
 
 CookieCrumbs is a Rails plugin that adds the ability to store more than 
 one value for a single cookie. This is helpful in applications that 
 need to store more than the maximum 20 allowed cookies.
 
+Note: This is an old plugin, and likely will not work anymore since it depends
+on internal Rails structure.
 
-== SYNOPSIS:
+
+## SYNOPSIS:
 
 CookieCrumbs provides both Rails and Javascript code needed to set cookies so
 that you can easily trade information between client and server side actions. 
 
-=== In a Rails Controllers
+### In a Rails Controllers
 
 The plugin will add a new method to your controller classes to access the 
 crumbs. 
@@ -35,7 +38,7 @@ crumbs.
   end
 
 
-=== In the Javascript
+### In the Javascript
 
 The javascript library extends the document object with various methods for
 manipulating both cookies and crumbs. 
@@ -56,15 +59,15 @@ manipulating both cookies and crumbs.
   document.delCrumb('widget', 'sources');
 
 
-== REQUIREMENTS:
+## REQUIREMENTS:
 
 The Prototype Library (http://prototype.conio.net) is required for the 
 javascript crumb code to work. 
 
 
-== INSTALL:
+## INSTALL:
 
-=== The Plugin
+### The Plugin
 
   $ ./script/plugin install http://svn.mikenaberezny.com/public/rails/plugins/cookie_crumbs
   
@@ -73,7 +76,7 @@ javascripts with:
 
   rake cookie_crumbs:install
 
-=== Including the javascript file
+### Including the javascript file
 
 The javascript portion of this library is not required for the rails portion
 to work. It is based on the Prototype library and can be added to your
@@ -82,29 +85,8 @@ application using the usual helpers.
   <%= javascript_include_tag 'prototype', 'cookie_crumbs %>
 
 
-== LICENSE:
+## LICENSE
 
-(The MIT License)
+Copyright (c) 2007 Derek DeVries
 
-Copyright (c) 2007 Derek DeVries (http://derekdevries.com)
-
-Code and documention: http://maintainablesoftware.com
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-'Software'), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Released under the [MIT License](http://www.opensource.org/licenses/MIT)
