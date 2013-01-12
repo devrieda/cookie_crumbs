@@ -74,7 +74,7 @@ javascript crumb code to work.
 ### The Plugin
 
 ```
-$ ./script/plugin install https://github.com/devrieda/cookie_crumbs
+$ ./script/plugin install git://github.com/devrieda/cookie_crumbs
 ```
 
 If you are upgrading from a previous version, update your application
